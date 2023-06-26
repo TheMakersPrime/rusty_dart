@@ -1,2 +1,3 @@
-Package under construction. Please come back later
-Rust inspired sum types for dart
+### Rust inspired sum types for dart
+
+#### Package under construction. Please come back later
