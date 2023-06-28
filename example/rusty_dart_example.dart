@@ -1,7 +1,13 @@
 import 'package:rusty_dart/rusty_dart.dart';
 
 void main() {
-  consumeDoSomething().match(
+  /*consumeDoSomething.match(
+    ok: print,
+    err: print,
+  );*/
+
+  match(
+    consumeDoSomething,
     ok: print,
     err: print,
   );

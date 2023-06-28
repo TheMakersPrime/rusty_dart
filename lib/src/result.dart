@@ -14,10 +14,11 @@ sealed class Result<T extends Object, E extends Exception> {
     if (isOk) {
       return _value!;
     }
-    throw 'Panic';
+    print('Panic : $_error!');
+    exit(1);
   }
 
-  // TODO (Ishwor) Find a way to propagate error up the function
+  // TODO (Ishwor) Name subjected to change
   T propagate() {
     if (isOk) {
       return _value!;
@@ -25,13 +26,39 @@ sealed class Result<T extends Object, E extends Exception> {
 
     throw _error!;
   }
+}
 
-  X match<X>({required X Function(T) ok, required X Function(E) err}) {
-    if (isOk) {
-      return ok(_value!);
+void match<T extends Object>(
+  ResultFunc<T, Error> resultFunc, {
+  required Function(T) ok,
+  required Function(Error) err,
+}) {
+  _match(resultFunc, ok: ok, err: err);
+}
+
+void _match<T extends Object>(
+  ResultFunc<T, Error> resultFunc, {
+  required Function(T) ok,
+  required Function(Error) err,
+}) {
+  try {
+    final result = resultFunc();
+    if (result.isOk) {
+      ok(result._value!);
     } else {
-      return err(_error!);
+      err(result._error!);
     }
+  } on Error catch (e) {
+    err(e);
+  }
+}
+
+extension ResultFuncExtension<T extends Object, E extends Error> on ResultFunc<T, E> {
+  void match({
+    required Function(T) ok,
+    required Function(Error) err,
+  }) {
+    _match(this, ok: ok, err: err);
   }
 }
 
