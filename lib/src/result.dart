@@ -24,6 +24,8 @@ sealed class Result<T extends Object, E extends Exception> {
     if (isOk) {
       return _value!;
     }
+
+    throw _error!;
   }
 
   X match<X>({required X Function(T) ok, required X Function(E) err}) {
