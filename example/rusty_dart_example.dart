@@ -1,13 +1,7 @@
 import 'package:rusty_dart/rusty_dart.dart';
 
 void main() {
-  /*consumeDoSomething.match(
-    ok: print,
-    err: print,
-  );*/
-
-  match(
-    consumeDoSomething,
+  fun1().match(
     ok: print,
     err: print,
   );
@@ -23,5 +17,7 @@ Result<String, Exception> doSomething(int index) {
     return Err(Error());
   }
 
-  return Ok('Success');
+Result<String, Error> fun3() {
+  return Ok('fun3');
+  // return Err(Error('fun3 error'));
 }

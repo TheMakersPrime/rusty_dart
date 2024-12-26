@@ -1,64 +1,39 @@
 sealed class Result<T extends Object, E extends Exception> {
+
+typedef OnMatch<R, V> = R Function(V);
+
+sealed class Result<T extends Object?, E extends Error> {
   const Result(this._value, this._error);
 
   final T? _value;
   final E? _error;
 
-  /// Returns true if result is Ok
+  // ------ Rust api ports start
+
+  /// Returns true if result is [Ok]
   bool get isOk => this is Ok;
 
-  /// Returns true if result is Ok
+  /// Returns true if result is [Ok]
   bool get isErr => !isOk;
 
-  T unwrap() {
-    if (isOk) {
-      return _value!;
-    }
-    print('Panic : $_error!');
-    exit(1);
+  /// Returns true if the result is [Ok] and the value inside of it matches a predicate.
+  T? unwrap() {
+    if (isErr) return null;
+
+    return _value!;
   }
 
-  // TODO (Ishwor) Name subjected to change
+  // ------ Rust api ports end
+
   T propagate() {
-    if (isOk) {
-      return _value!;
-    }
+    if (isOk) return _value!;
 
     throw _error!;
   }
-}
 
-void match<T extends Object>(
-  ResultFunc<T, Error> resultFunc, {
-  required Function(T) ok,
-  required Function(Error) err,
-}) {
-  _match(resultFunc, ok: ok, err: err);
-}
-
-void _match<T extends Object>(
-  ResultFunc<T, Error> resultFunc, {
-  required Function(T) ok,
-  required Function(Error) err,
-}) {
-  try {
-    final result = resultFunc();
-    if (result.isOk) {
-      ok(result._value!);
-    } else {
-      err(result._error!);
-    }
-  } on Error catch (e) {
-    err(e);
-  }
-}
-
-extension ResultFuncExtension<T extends Object, E extends Error> on ResultFunc<T, E> {
-  void match({
-    required Function(T) ok,
-    required Function(Error) err,
-  }) {
-    _match(this, ok: ok, err: err);
+  V match<V>({required OnMatch<V, T> ok, required OnMatch<V, E> err}) {
+    if (isOk) return ok(_value as T);
+    return err(_error!);
   }
 }
 
@@ -68,4 +43,18 @@ class Ok<T extends Object, E extends Exception> extends Result<T, E> {
 
 class Err<T extends Object, E extends Exception> extends Result<T, E> {
   Err(E error) : super(null, error);
+}
+
+extension ExtensionX<T> on Result<T, Error> Function() {
+  T propagate() {
+    try {
+      final result = this();
+
+      if (result.isOk) return result._value!;
+
+      throw result._error!;
+    } on Error catch(e) {
+      rethrow;
+    }
+  }
 }
