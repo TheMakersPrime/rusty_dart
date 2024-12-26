@@ -1,6 +1,6 @@
 name: rusty_dart
 description: Rust inspired sum types for dart.
-version: 0.1.1
+version: 0.1.2
 repository: https://github.com/TheMakersPrime/rusty_dart
 
 environment:
