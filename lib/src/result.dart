@@ -26,11 +26,11 @@ sealed class Result<T extends Object, E extends Exception> {
     }
   }
 
-  void match({required Function(T) ok, required Function(E) err}) {
+  X match<X>({required X Function(T) ok, required X Function(E) err}) {
     if (isOk) {
-      ok(_value!);
+      return ok(_value!);
     } else {
-      err(_error!);
+      return err(_error!);
     }
   }
 }
