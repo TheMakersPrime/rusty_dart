@@ -1,5 +1,3 @@
-import 'package:rusty_dart/src/error.dart';
-
 sealed class Result<T extends Object, E extends Exception> {
   const Result(this._value, this._error);
 
