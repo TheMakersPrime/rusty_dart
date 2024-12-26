@@ -7,12 +7,12 @@ void main() {
   );
 }
 
-Result<String, Error> consumeDoSomething() {
+Result<String, Exception> consumeDoSomething() {
   final r2 = doSomething(0).unwrap();
   return Ok('consumerDoSomething() : $r2');
 }
 
-Result<String, Error> doSomething(int index) {
+Result<String, Exception> doSomething(int index) {
   if (index == 0) {
     return Err(Error());
   }

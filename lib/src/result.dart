@@ -1,6 +1,6 @@
 import 'package:rusty_dart/src/error.dart';
 
-sealed class Result<T extends Object, E extends Error> {
+sealed class Result<T extends Object, E extends Exception> {
   const Result(this._value, this._error);
 
   final T? _value;
@@ -35,10 +35,10 @@ sealed class Result<T extends Object, E extends Error> {
   }
 }
 
-class Ok<T extends Object, E extends Error> extends Result<T, E> {
+class Ok<T extends Object, E extends Exception> extends Result<T, E> {
   Ok(T value) : super(value, null);
 }
 
-class Err<T extends Object, E extends Error> extends Result<T, E> {
+class Err<T extends Object, E extends Exception> extends Result<T, E> {
   Err(E error) : super(null, error);
 }
