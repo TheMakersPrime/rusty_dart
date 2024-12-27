@@ -1,6 +1,6 @@
 typedef OnMatch<R, V> = R Function(V);
 
-sealed class Result<T extends Object?, E extends Exception> {
+sealed class Result<T, E extends Exception> {
   const Result(this._value, this._error);
 
   final T? _value;
@@ -65,10 +65,10 @@ sealed class Result<T extends Object?, E extends Exception> {
   }
 }
 
-class Ok<T extends Object, E extends Exception> extends Result<T, E> {
+class Ok<T, E extends Exception> extends Result<T, E> {
   Ok(T value) : super(value, null);
 }
 
-class Err<T extends Object, E extends Exception> extends Result<T, E> {
+class Err<T, E extends Exception> extends Result<T, E> {
   Err(E error) : super(null, error);
 }
