@@ -1,23 +1,19 @@
 import 'package:rusty_dart/rusty_dart.dart';
 
 void main() {
-  fun1().match(
-    ok: print,
-    err: print,
+  final result = fun0();
+  result.match(
+    ok: (x) {
+      // do something with the contained value
+      print(x);
+    },
+    err: (e) {
+      // do something with the contained error
+      print(e);
+    },
   );
 }
 
-Result<String, Exception> consumeDoSomething() {
-  final r2 = doSomething(0).unwrap();
-  return Ok('consumerDoSomething() : $r2');
-}
-
-Result<String, Exception> doSomething(int index) {
-  if (index == 0) {
-    return Err(Error());
-  }
-
-Result<String, Error> fun3() {
-  return Ok('fun3');
-  // return Err(Error('fun3 error'));
+Result<String, Exception> fun0() {
+  return Ok('0');
 }

@@ -1,4 +1,3 @@
-import 'package:rusty_dart/rusty_dart.dart';
 import 'package:test/test.dart';
 
 void main() {
