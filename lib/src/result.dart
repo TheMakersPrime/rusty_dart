@@ -1,14 +1,10 @@
-sealed class Result<T extends Object, E extends Exception> {
-
 typedef OnMatch<R, V> = R Function(V);
 
-sealed class Result<T extends Object?, E extends Error> {
+sealed class Result<T extends Object?, E extends Exception> {
   const Result(this._value, this._error);
 
   final T? _value;
   final E? _error;
-
-  // ------ Rust api ports start
 
   /// Returns true if result is [Ok]
   bool get isOk => this is Ok;
@@ -16,19 +12,51 @@ sealed class Result<T extends Object?, E extends Error> {
   /// Returns true if result is [Ok]
   bool get isErr => !isOk;
 
-  /// Returns true if the result is [Ok] and the value inside of it matches a predicate.
-  T? unwrap() {
-    if (isErr) return null;
-
-    return _value!;
+  /// Returns true if result is [Ok] and the value inside of it
+  /// matches a predicate
+  bool isOkAnd(bool Function(T) f) {
+    return match(
+      ok: (x) => f(x),
+      err: (_) => false,
+    );
   }
 
-  // ------ Rust api ports end
+  /// Returns true if result is [Err] and the value inside of it
+  /// matches a predicate
+  bool isErrAnd(bool Function(E) f) {
+    return match(
+      ok: (_) => false,
+      err: (e) => f(e),
+    );
+  }
 
-  T propagate() {
+  /// Returns value held by [Ok] if [isOk]
+  ///
+  /// Else returns null
+  T? get ok {
     if (isOk) return _value!;
+    return null;
+  }
 
-    throw _error!;
+  /// Returns value held by [Err] if [isErr]
+  ///
+  /// Else returns null
+  E? get err {
+    if (isOk) return null;
+    return _error!;
+  }
+
+  /// Returns the value if [isOk]
+  ///
+  /// Else return nulls
+  T? get unwrap => ok;
+
+  /// Returns the contained [Ok] value or compute it from the given function
+  T unwrapOrElse(T Function(E) op) {
+    return match(
+      ok: (x) => x,
+      err: (e) => op(e),
+    );
   }
 
   V match<V>({required OnMatch<V, T> ok, required OnMatch<V, E> err}) {
@@ -43,18 +71,4 @@ class Ok<T extends Object, E extends Exception> extends Result<T, E> {
 
 class Err<T extends Object, E extends Exception> extends Result<T, E> {
   Err(E error) : super(null, error);
-}
-
-extension ExtensionX<T> on Result<T, Error> Function() {
-  T propagate() {
-    try {
-      final result = this();
-
-      if (result.isOk) return result._value!;
-
-      throw result._error!;
-    } on Error catch(e) {
-      rethrow;
-    }
-  }
 }
