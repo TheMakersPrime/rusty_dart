@@ -59,6 +59,13 @@ sealed class Result<T, E extends Exception> {
     );
   }
 
+  Result<T, E> mapErr(E Function(E) operation) {
+    return match(
+      ok: Ok.new,
+      err: (e) => Err(operation(e)),
+    );
+  }
+
   V match<V>({required OnMatch<V, T> ok, required OnMatch<V, E> err}) {
     if (isOk) return ok(_value as T);
     return err(_error!);
